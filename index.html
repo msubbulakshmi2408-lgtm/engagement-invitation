@@ -3,511 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subulakshmi & Deepak - Engagement Invitation</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Canvas Confetti Library -->
+    <title>Subbulakshmi & Deepak - Engagement Invitation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --bg-blue: #0b1329;
-            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-bg: rgba(15, 23, 42, 0.70);
             --gold: #d4af37;
             --gold-light: #f3e5ab;
             --silver: #cbd5e1;
             --text-light: #f8fafc;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-blue); color: var(--text-light); min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-blue);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-        }
+        .background-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-image: url('background.jpg.jpg'); background-size: cover; background-position: center; z-index: -2; }
+        .background-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11, 19, 41, 0.12); z-index: -1; }
 
-        /* Custom Background Image Layer pointing to background.jpg.jpg */
-        .background-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: url('background.jpg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: -2;
-        }
-
-        /* Dark subtle overlay so text and cards remain readable over the background */
-        .background-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(11, 19, 41, 0.45);
-            z-index: -1;
-        }
-
-        /* Falling Petals */
-        .petal {
-            position: fixed;
-            top: -10vh;
-            background: radial-gradient(circle, #f3e5ab 0%, #cbd5e1 100%);
-            border-radius: 150% 0 150% 0;
-            opacity: 0.7;
-            z-index: 1;
-            animation: fall linear infinite;
-        }
-
+        .petal { position: fixed; top: -10vh; background: radial-gradient(circle, #f3e5ab 0%, #cbd5e1 100%); border-radius: 150% 0 150% 0; opacity: 0.85; z-index: 1; animation: fall linear infinite; }
+        .glitter { position: fixed; top: -10vh; background: #f3e5ab; width: 4px; height: 4px; border-radius: 50%; box-shadow: 0 0 6px #d4af37; opacity: 0.9; z-index: 1; animation: fall linear infinite; }
         @keyframes fall {
-            0% {
-                transform: translateY(-10vh) translateX(0) rotate(0deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(110vh) translateX(40px) rotate(360deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0.9; }
+            100% { transform: translateY(110vh) translateX(60px) rotate(360deg); opacity: 0; }
         }
 
-        /* App Container styled like a mobile frame with transparency */
-        .invitation-wrapper {
-            width: 100%;
-            max-width: 420px;
-            height: 100vh;
-            max-height: 850px;
-            background: rgba(11, 19, 41, 0.25);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
+        .invitation-wrapper { width: 100%; max-width: 440px; height: 100vh; max-height: 900px; background: rgba(11, 19, 41, 0.20); backdrop-filter: blur(2px); border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        @media (min-width: 480px) { .invitation-wrapper { border-radius: 24px; } }
 
-        @media (min-width: 480px) {
-            .invitation-wrapper {
-                border-radius: 24px;
-            }
-        }
+        .pages-container { position: relative; width: 100%; height: 100%; overflow: hidden; transition: overflow-y 0.5s ease; scroll-behavior: smooth; }
+        .pages-container.unlocked { overflow-y: auto; }
+        .pages-container::-webkit-scrollbar { display: none; }
+        
+        .section { min-height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; position: relative; }
 
-        .invitation-wrapper::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* SECTIONS / PAGES */
-        .section {
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            position: relative;
-        }
-
-        /* ENVELOPE SCREEN (Section 1) */
-        #section-envelope {
-            text-align: center;
-            justify-content: space-around;
-        }
-
-        .invitation-top-label {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 15px;
-            letter-spacing: 3px;
-            color: var(--silver);
-            text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .envelope-box {
-            position: relative;
-            width: 270px;
-            height: 360px;
-            background: rgba(30, 41, 59, 0.9);
-            border: 2px solid var(--gold);
-            border-radius: 6px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px auto;
-            transition: transform 0.8s ease, opacity 0.8s ease;
-        }
-
-        .envelope-box.opened {
-            transform: scale(1.1);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .envelope-flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 50%, rgba(15, 23, 42, 0.95) 50%);
-            clip-path: polygon(0 0, 50% 100%, 100% 0);
-            border-top: 2px solid var(--gold);
-        }
-
-        .wax-seal {
-            position: relative;
-            width: 75px;
-            height: 75px;
-            background: #0f172a;
-            border: 2px solid var(--gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 22px;
-            color: var(--gold-light);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-            cursor: pointer;
-            z-index: 5;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .wax-seal:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.7);
-        }
-
-        .tap-to-open-text {
-            font-size: 13px;
-            letter-spacing: 2px;
-            color: var(--gold-light);
-            text-transform: uppercase;
-            margin-top: 5px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-        }
-
-        .invited-label {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 16px;
-            color: var(--silver);
-            letter-spacing: 1px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-        }
-
-        /* CONTENT CARDS */
-        .content-card {
-            width: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 16px;
-            padding: 25px 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            margin: 15px 0;
-        }
-
-        h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 400;
-            color: var(--gold-light);
-            font-size: 26px;
-        }
-
-        .names {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 34px;
-            color: var(--gold-light);
-            margin: 10px 0;
-            font-style: italic;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-        }
-
-        .subtitle {
-            font-size: 11px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--silver);
-            margin-bottom: 8px;
-        }
-
-        /* SCRATCH CARD */
-        .scratch-box {
-            position: relative;
-            width: 100%;
-            height: 95px;
-            background: #0f172a;
-            border: 1px dashed var(--gold);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            cursor: pointer;
-            margin: 15px 0;
-        }
-
-        .scratch-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            touch-action: none;
-            cursor: crosshair;
-        }
-
-        .scratch-reveal-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 19px;
-            color: var(--gold-light);
-            text-align: center;
+        #section-envelope { text-align: center; justify-content: center; gap: 15px; }
+        
+        .invitation-top-label { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 20px; 
+            letter-spacing: 3px; 
+            color: var(--gold-light); 
+            text-transform: uppercase; 
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8); 
             line-height: 1.4;
+            text-align: center;
         }
-
-        .ornament-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            color: var(--gold);
-        }
-
-        .ornament-divider::before, .ornament-divider::after {
-            content: "";
-            height: 1px;
-            width: 60px;
-            background: rgba(212, 175, 55, 0.4);
-        }
-
-        /* FAMILY DETAILS */
-        .family-block {
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--silver);
-            margin: 12px 0;
-        }
-
-        .family-name-title {
-            color: var(--gold-light);
+        .invitation-top-label .script-part {
+            display: block;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 20px;
-            margin-bottom: 2px;
-            font-weight: 600;
-        }
-
-        /* MAP BOX */
-        .map-preview-box {
-            width: 100%;
-            height: 110px;
-            background: #1e293b;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            margin: 12px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .map-preview-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(circle, rgba(212,175,55,0.15) 1px, transparent 1px);
-            background-size: 16px 16px;
-            opacity: 0.6;
-        }
-
-        .map-label {
-            position: relative;
-            z-index: 2;
-            font-size: 12px;
+            font-style: italic;
+            font-size: 26px;
+            text-transform: none;
             letter-spacing: 1px;
             color: var(--gold-light);
-            background: rgba(15, 23, 42, 0.8);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--gold);
+            margin-top: 2px;
         }
 
-        .map-btn {
-            display: inline-block;
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold-light);
-            padding: 10px 22px;
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-radius: 20px;
-            text-decoration: none;
-            margin-top: 10px;
-            transition: all 0.3s ease;
+        .envelope-container { position: relative; width: 320px; height: 220px; margin: 5px auto; cursor: pointer; perspective: 1000px; transition: transform 0.6s ease, opacity 0.6s ease; }
+        .envelope-container.opened { transform: scale(1.15); opacity: 0; pointer-events: none; }
+        .envelope-body { position: absolute; bottom: 0; left: 0; width: 100%; height: 170px; background: #1e293b; border: 2px solid var(--gold); border-top: none; border-radius: 0 0 10px 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 2; }
+        .envelope-pocket-left { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-bottom: 170px solid #1a233a; border-right: 160px solid transparent; border-radius: 0 0 0 10px; z-index: 3; }
+        .envelope-pocket-right { position: absolute; bottom: 0; right: 0; width: 0; height: 0; border-bottom: 170px solid #1e293b; border-left: 160px solid transparent; border-radius: 0 0 10px 0; z-index: 3; }
+        .envelope-flap { position: absolute; top: 0; left: 0; width: 100%; height: 110px; background: #27354f; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); border-right: 2px solid var(--gold); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform 0.8s ease; z-index: 4; }
+        .envelope-container.opening .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        .wax-seal { position: absolute; top: 75px; left: 50%; transform: translateX(-50%); width: 65px; height: 65px; background: #0f172a; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--gold-light); box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); z-index: 5; }
+        
+        .tap-to-open-text { 
+            font-size: 13px; 
+            letter-spacing: 2.5px; 
+            color: var(--gold-light); 
+            text-transform: uppercase; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+            margin-top: 15px; 
+            opacity: 0.9;
         }
 
-        .map-btn:hover {
-            background: var(--gold);
-            color: var(--bg-blue);
-        }
+        #section-main { justify-content: flex-start; padding-top: 40px; }
+        .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 26px; letter-spacing: 2px; color: var(--gold-light); margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; }
+        
+        .names-container { text-align: center; margin: 5px 0 15px 0; text-shadow: 0 3px 6px rgba(0,0,0,0.8); }
+        .names-line { font-family: 'Cormorant Garamond', serif; font-size: 40px; color: var(--gold-light); font-style: italic; line-height: 1.2; }
+        .names-and { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--gold-light); font-style: italic; margin: 2px 0; line-height: 1; }
 
-        .celebrate-btn {
-            background: rgba(212, 175, 55, 0.15);
-            border: 1px solid var(--gold);
-            color: var(--gold-light);
-            padding: 12px 28px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-radius: 30px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s ease;
-        }
+        .content-card { width: 100%; background: var(--card-bg); backdrop-filter: blur(6px); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 18px; padding: 22px 18px; text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,0.5); margin: 12px 0; }
+        h2 { font-family: 'Cormorant Garamond', serif; font-weight: 400; color: var(--gold-light); font-size: 34px; margin-bottom: 6px; }
 
-        .celebrate-btn:hover {
-            background: var(--gold);
-            color: var(--bg-blue);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-        }
+        .scratch-box { position: relative; width: 100%; height: 160px; background: #0f172a; border: 1px dashed var(--gold); border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 12px 0; }
+        .scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; transition: opacity 0.5s ease; }
+        .scratch-reveal-text { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--gold-light); text-align: center; line-height: 1.4; }
+
+        /* Hidden countdown container initially */
+        .countdown-wrapper-section { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.8s ease, opacity 0.8s ease; }
+        .countdown-wrapper-section.revealed { max-height: 300px; opacity: 1; }
+
+        .countdown-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; margin-bottom: 14px; }
+        .countdown-title-line { height: 1px; width: 45px; background: rgba(212, 175, 55, 0.5); }
+        .countdown-title-text { font-size: 11px; letter-spacing: 2px; color: var(--gold-light); font-weight: 400; text-transform: uppercase; white-space: nowrap; }
+
+        .countdown-container { display: flex; justify-content: center; gap: 12px; margin-top: 6px; }
+        .countdown-box { background: rgba(15, 23, 42, 0.85); border: 1px solid var(--gold); border-radius: 10px; padding: 8px 10px; min-width: 60px; text-align: center; }
+        .countdown-number { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--gold-light); font-weight: 600; }
+        .countdown-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--silver); margin-top: 2px; }
+
+        .ornament-divider { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 18px 0; color: var(--gold); font-size: 18px; }
+        .ornament-divider::before, .ornament-divider::after { content: ""; height: 1px; width: 70px; background: rgba(212, 175, 55, 0.5); }
+
+        .family-divider { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 16px 0; }
+        .family-divider-line { height: 1px; width: 70px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+        .family-divider-stars { display: flex; align-items: center; gap: 6px; color: var(--gold); font-size: 14px; text-shadow: 0 0 8px rgba(212, 175, 55, 0.6); }
+
+        .family-block { margin: 10px 0; }
+        .family-name-title { color: var(--gold-light); font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; margin-bottom: 2px; }
+        .family-parents { font-size: 13px; line-height: 1.5; color: var(--silver); }
+
+        .venue-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--gold-light); }
+        .venue-sub { font-size: 16px; color: var(--silver); margin-top: 2px; margin-bottom: 12px; }
+        .map-frame { width: 100%; height: 140px; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+        .map-frame iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.1) saturate(0.9); }
+        .map-btn { display: inline-block; background: transparent; border: 1px solid var(--gold); color: var(--gold-light); padding: 10px 24px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; border-radius: 25px; text-decoration: none; transition: all 0.3s ease; }
+        .map-btn:hover { background: var(--gold); color: var(--bg-blue); }
+
+        .celebration-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--gold-light); font-style: italic; margin-bottom: 12px; text-align: center; }
+        .celebrate-btn { background: rgba(212, 175, 55, 0.2); border: 1px solid var(--gold); color: var(--gold-light); padding: 12px 30px; font-family: 'Montserrat', sans-serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; }
+        .celebrate-btn:hover { background: var(--gold); color: var(--bg-blue); box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
+        .golden-heart { font-size: 20px; color: var(--gold); margin-top: 15px; text-shadow: 0 0 10px rgba(212, 175, 55, 0.8); animation: pulse-heart 1.5s infinite ease-in-out; }
+        @keyframes pulse-heart { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     </style>
 </head>
 <body>
 
-    <!-- Background Image & Overlay -->
     <div class="background-container"></div>
     <div class="background-overlay"></div>
+    <div id="particles-container"></div>
 
-    <!-- Falling Petals Container -->
-    <div id="petals-container"></div>
+    <div class="invitation-wrapper">
+        <div class="pages-container" id="pagesContainer">
 
-    <div class="invitation-wrapper" id="scrollContainer">
-
-        <!-- SECTION 1: ENVELOPE -->
-        <div class="section" id="section-envelope">
-            <div class="invitation-top-label">Our Forever Begins Together</div>
-            
-            <div class="envelope-box" id="envelopeBox">
-                <div class="envelope-flap"></div>
-                <div class="wax-seal" onclick="openEnvelopeAndScroll()">S & D</div>
-            </div>
-
-            <div style="text-align: center;">
-                <div class="tap-to-open-text">Tap to Open</div>
-                <div class="invited-label" style="margin-top: 6px;">You are cordially invited</div>
-            </div>
-        </div>
-
-        <!-- SECTION 2: MAIN EVENT & SCRATCH CARD -->
-        <div class="section" id="section-main">
-            <div class="subtitle">We Are Getting Engaged</div>
-            <div class="names">Subulakshmi & Deepak</div>
-
-            <div class="content-card">
-                <div class="subtitle" style="margin-bottom: 5px;">Save The Date</div>
-                <div style="font-size: 12px; color: var(--silver); margin-bottom: 10px;">Scratch below to reveal our special day</div>
+            <!-- PAGE 1: ENVELOPE -->
+            <div class="section" id="section-envelope">
+                <div class="invitation-top-label">
+                    OUR FOREVER BEGINS
+                    <span class="script-part">Together</span>
+                </div>
                 
-                <div class="scratch-box" id="scratchBoxContainer">
-                    <div class="scratch-reveal-text">
-                        <strong>17th September 2026</strong><br>
-                        <span style="font-size: 13px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px;">6:00 PM Onwards</span>
+                <div class="envelope-container" id="envelopeBox" onclick="openEnvelope()">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-pocket-left"></div>
+                    <div class="envelope-pocket-right"></div>
+                    <div class="envelope-body"></div>
+                    <div class="wax-seal">S & D</div>
+                </div>
+
+                <div class="tap-to-open-text">Tap envelope to open</div>
+            </div>
+
+            <!-- PAGE 2: MAIN INVITATION -->
+            <div class="section" id="section-main">
+                <div class="subtitle">We Are Getting Engaged</div>
+                
+                <div class="names-container">
+                    <div class="names-line">Subbulakshmi</div>
+                    <div class="names-and">&</div>
+                    <div class="names-line">Deepak</div>
+                </div>
+
+                <!-- Scratch Card Box -->
+                <div class="content-card">
+                    <div class="subtitle" style="font-size: 20px; margin-bottom: 2px;">Save the date</div>
+                    <div style="font-size: 13px; color: var(--silver); margin-bottom: 8px;">Scratch below to reveal our special day</div>
+                    
+                    <div class="scratch-box" id="scratchBoxContainer">
+                        <div class="scratch-reveal-text" id="scratchRevealText">
+                            <strong>17th September 2026</strong><br>
+                            <span style="font-size: 16px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px;">6:00 PM Onwards</span>
+                        </div>
+                        <canvas class="scratch-canvas" id="scratchCanvas"></canvas>
                     </div>
-                    <canvas class="scratch-canvas" id="scratchCanvas"></canvas>
+
+                    <!-- Hidden Countdown Section that expands once revealed -->
+                    <div class="countdown-wrapper-section" id="countdownWrapperSection">
+                        <div class="countdown-title-wrapper">
+                            <div class="countdown-title-line"></div>
+                            <div class="countdown-title-text">The countdown begins</div>
+                            <div class="countdown-title-line"></div>
+                        </div>
+
+                        <!-- Countdown Timer -->
+                        <div class="countdown-container">
+                            <div class="countdown-box">
+                                <div class="countdown-number" id="days">00</div>
+                                <div class="countdown-label">Days</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-number" id="hours">00</div>
+                                <div class="countdown-label">Hours</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-number" id="minutes">00</div>
+                                <div class="countdown-label">Mins</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-number" id="seconds">00</div>
+                                <div class="countdown-label">Secs</div>
+                            </div>
+                        </div>
+
+                        <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: var(--silver); margin-top: 14px;">Until our forever begins</div>
+                    </div>
+                </div>
+
+                <div class="ornament-divider">❖</div>
+
+                <!-- Families Section -->
+                <div class="subtitle" style="font-size: 22px;">Two Families, One Promise</div>
+                <h2>Introducing the Families</h2>
+
+                <div class="content-card" style="padding: 20px 15px;">
+                    <div class="family-block">
+                        <div class="family-name-title">SUBBULAKSHMI M</div>
+                        <div class="family-parents">D/O Mr. Muthuganesan B & Mrs. Baghavathi Priya S</div>
+                    </div>
+
+                    <div class="family-divider">
+                        <div class="family-divider-line"></div>
+                        <div class="family-divider-stars">✦ ✧ ✦</div>
+                        <div class="family-divider-line"></div>
+                    </div>
+
+                    <div class="family-block">
+                        <div class="family-name-title">DEEPAK M</div>
+                        <div class="family-parents">S/O Mr. Murthi B & Mrs. Kanchana M</div>
+                    </div>
+                </div>
+
+                <!-- Venue & Map Section -->
+                <div class="content-card" style="padding: 20px 15px;">
+                    <div class="subtitle" style="font-size: 20px; margin-bottom: 2px;">Venue</div>
+                    <div class="venue-title">Lara Courtyard</div>
+                    <div class="venue-sub">Avadi</div>
+                    
+                    <div class="map-frame">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.297441865243!2d80.1000!3d13.1100!2m3!1f0!2f0!3f0!3m2!1f1024!2f768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDA2JzM2LjAiTiA4MMKwMDYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+
+                    <a href="https://maps.google.com/?q=Lara+Courtyard+Avadi" target="_blank" class="map-btn">Get Directions</a>
+                </div>
+
+                <!-- Celebration & Footer -->
+                <div class="content-card" style="padding: 24px 15px; margin-bottom: 40px;">
+                    <div class="celebration-text">We await your presence to celebrate this new chapter</div>
+                    <button class="celebrate-btn" onclick="triggerFinalCelebration()">Celebrate With Us</button>
+                    <div class="golden-heart">♥</div>
                 </div>
             </div>
 
-            <div style="color: var(--silver); font-size: 12px; margin-top: 15px; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">↓ Scroll for Family & Venue</div>
         </div>
-
-        <!-- SECTION 3: FAMILY DETAILS & VENUE -->
-        <div class="section" id="section-family">
-            <div class="ornament-divider">❖</div>
-            <div class="subtitle">Two Families, One Promise</div>
-            <h2>Introducing the Families</h2>
-
-            <div class="content-card" style="padding: 18px 15px;">
-                <div class="family-block">
-                    <div class="family-name-title">Subulakshmi M</div>
-                    <div>D/O Mr. Muthuganesan & Mrs. Bhagavathi Priya</div>
-                </div>
-
-                <div style="height: 1px; background: rgba(212,175,55,0.2); margin: 12px 0;"></div>
-
-                <div class="family-block">
-                    <div class="family-name-title">Deepak M</div>
-                    <div>S/O Mr. Murthy & Mrs. Kanjana</div>
-                </div>
-            </div>
-
-            <div class="content-card" style="padding: 18px 15px; margin-top: 5px;">
-                <div class="subtitle" style="margin-bottom: 4px;">Venue</div>
-                <div style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--gold-light);">Lara Courtyard</div>
-                <div style="font-size: 12px; color: var(--silver); margin-top: 2px;">Avadi</div>
-                
-                <div class="map-preview-box">
-                    <div class="map-preview-bg"></div>
-                    <div class="map-label">📍 Lara Courtyard, Avadi</div>
-                </div>
-
-                <a href="https://maps.google.com/?q=Lara+Courtyard+Avadi" target="_blank" class="map-btn">Get Directions</a>
-            </div>
-
-            <button class="celebrate-btn" onclick="triggerFinalCelebration()">Celebrate With Us ✨</button>
-        </div>
-
     </div>
 
     <script>
-        // Generate Minimal Floating Petals
-        const petalsContainer = document.getElementById('petals-container');
-        const petalCount = 10;
-
-        for (let i = 0; i < petalCount; i++) {
+        const particlesContainer = document.getElementById('particles-container');
+        
+        for (let i = 0; i < 15; i++) {
             const petal = document.createElement('div');
             petal.classList.add('petal');
-            
-            const size = Math.random() * 8 + 8;
+            const size = Math.random() * 10 + 8;
             petal.style.width = `${size}px`;
-            petal.style.height = `${size * 1.5}px`;
+            petal.style.height = `${size * 1.6}px`;
             petal.style.left = `${Math.random() * 100}vw`;
-            
-            const duration = Math.random() * 8 + 6;
-            const delay = Math.random() * 5;
-            petal.style.animationDuration = `${duration}s`;
-            petal.style.animationDelay = `${delay}s`;
-            
-            petalsContainer.appendChild(petal);
+            petal.style.animationDuration = `${Math.random() * 7 + 5}s`;
+            petal.style.animationDelay = `${Math.random() * 5}s`;
+            particlesContainer.appendChild(petal);
         }
 
-        // Open Envelope & Smooth Scroll to Section 2
-        function openEnvelopeAndScroll() {
+        for (let i = 0; i < 20; i++) {
+            const glitter = document.createElement('div');
+            glitter.classList.add('glitter');
+            glitter.style.left = `${Math.random() * 100}vw`;
+            glitter.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            glitter.style.animationDelay = `${Math.random() * 4}s`;
+            particlesContainer.appendChild(glitter);
+        }
+
+        function openEnvelope() {
             const envelopeBox = document.getElementById('envelopeBox');
-            envelopeBox.classList.add('opened');
+            const pagesContainer = document.getElementById('pagesContainer');
+            
+            envelopeBox.classList.add('opening');
+            
+            setTimeout(() => {
+                envelopeBox.classList.add('opened');
+            }, 500);
 
             setTimeout(() => {
+                pagesContainer.classList.add('unlocked');
                 document.getElementById('section-main').scrollIntoView({ behavior: 'smooth' });
                 initScratchCard();
-            }, 500);
+            }, 800);
         }
 
-        // Scratch Card Implementation
         let scratchInitialized = false;
         function initScratchCard() {
             if (scratchInitialized) return;
@@ -523,31 +318,113 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             ctx.fillStyle = '#f3e5ab';
-            ctx.font = '13px Montserrat, sans-serif';
+            ctx.font = '16px Montserrat, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('✨ Scratch Here to Reveal ✨', canvas.width / 2, canvas.height / 2 + 5);
+            ctx.fillText('✨ Scratch Here to Reveal ✨', canvas.width / 2, canvas.height / 2 + 6);
 
-            let scratched = false;
+            let isDrawing = false;
+            let revealedAuto = false;
+            let strokeCount = 0; // Tracks distinct continuous scratching sessions (strokes)
 
-            function revealAll(e) {
-                if (scratched) return;
-                scratched = true;
+            function autoClearAndReveal() {
+                if (revealedAuto) return;
+                revealedAuto = true;
+                
+                // Smoothly fade out canvas overlay and automatically rub it off completely
+                canvas.style.transition = 'opacity 0.6s ease';
+                canvas.style.opacity = '0';
+                
+                setTimeout(() => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.style.pointerEvents = 'none';
+                }, 600);
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Reveal countdown section
+                document.getElementById('countdownWrapperSection').classList.add('revealed');
 
-                confetti({
-                    particleCount: 100,
-                    spread: 80,
-                    origin: { y: 0.5 },
-                    colors: ['#d4af37', '#f3e5ab', '#cbd5e1', '#ffffff']
-                });
+                // Pop confetti
+                triggerFinalCelebration();
             }
 
-            canvas.addEventListener('mousedown', revealAll);
-            canvas.addEventListener('touchstart', revealAll);
+            function processScratch(e) {
+                if (!isDrawing || revealedAuto) return;
+                const pos = getPosition(e);
+
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 35, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function getPosition(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                strokeCount++;
+                processScratch(e);
+            }
+
+            function stopDrawing() {
+                if (!isDrawing) return;
+                isDrawing = false;
+                
+                // Trigger auto-completion exactly after completing the 2nd continuous scratch session
+                if (strokeCount >= 2 && !revealedAuto) {
+                    autoClearAndReveal();
+                }
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', processScratch);
+            window.addEventListener('mouseup', stopDrawing);
+
+            canvas.addEventListener('touchstart', (e) => {
+                startDrawing(e);
+                e.preventDefault();
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                processScratch(e);
+                e.preventDefault();
+            });
+            window.addEventListener('touchend', stopDrawing);
         }
 
-        // Final Celebration Confetti Animation
+        const eventDate = new Date('September 17, 2026 18:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                document.getElementById('days').innerText = '00';
+                document.getElementById('hours').innerText = '00';
+                document.getElementById('minutes').innerText = '00';
+                document.getElementById('seconds').innerText = '00';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const realMinutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(realMinutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
         function triggerFinalCelebration() {
             confetti({
                 particleCount: 150,
