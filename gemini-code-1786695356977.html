@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subulakshmi & Deepak - Engagement Invitation</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-blue: #0b1329;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --silver: #cbd5e1;
+            --text-light: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-blue);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Custom Background Image Layer pointing to background.jpg.jpg */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('background.jpg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+
+        /* Dark subtle overlay so text and cards remain readable over the background */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(11, 19, 41, 0.45);
+            z-index: -1;
+        }
+
+        /* Falling Petals */
+        .petal {
+            position: fixed;
+            top: -10vh;
+            background: radial-gradient(circle, #f3e5ab 0%, #cbd5e1 100%);
+            border-radius: 150% 0 150% 0;
+            opacity: 0.7;
+            z-index: 1;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(110vh) translateX(40px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* App Container styled like a mobile frame with transparency */
+        .invitation-wrapper {
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            max-height: 850px;
+            background: rgba(11, 19, 41, 0.25);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        @media (min-width: 480px) {
+            .invitation-wrapper {
+                border-radius: 24px;
+            }
+        }
+
+        .invitation-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* SECTIONS / PAGES */
+        .section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* ENVELOPE SCREEN (Section 1) */
+        #section-envelope {
+            text-align: center;
+            justify-content: space-around;
+        }
+
+        .invitation-top-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            letter-spacing: 3px;
+            color: var(--silver);
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .envelope-box {
+            position: relative;
+            width: 270px;
+            height: 360px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            transition: transform 0.8s ease, opacity 0.8s ease;
+        }
+
+        .envelope-box.opened {
+            transform: scale(1.1);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 50%, rgba(15, 23, 42, 0.95) 50%);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            border-top: 2px solid var(--gold);
+        }
+
+        .wax-seal {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            background: #0f172a;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            color: var(--gold-light);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .wax-seal:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.7);
+        }
+
+        .tap-to-open-text {
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            margin-top: 5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .invited-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            color: var(--silver);
+            letter-spacing: 1px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        /* CONTENT CARDS */
+        .content-card {
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            margin: 15px 0;
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            color: var(--gold-light);
+            font-size: 26px;
+        }
+
+        .names {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 34px;
+            color: var(--gold-light);
+            margin: 10px 0;
+            font-style: italic;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .subtitle {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--silver);
+            margin-bottom: 8px;
+        }
+
+        /* SCRATCH CARD */
+        .scratch-box {
+            position: relative;
+            width: 100%;
+            height: 95px;
+            background: #0f172a;
+            border: 1px dashed var(--gold);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            margin: 15px 0;
+        }
+
+        .scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .scratch-reveal-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            color: var(--gold-light);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .ornament-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            color: var(--gold);
+        }
+
+        .ornament-divider::before, .ornament-divider::after {
+            content: "";
+            height: 1px;
+            width: 60px;
+            background: rgba(212, 175, 55, 0.4);
+        }
+
+        /* FAMILY DETAILS */
+        .family-block {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--silver);
+            margin: 12px 0;
+        }
+
+        .family-name-title {
+            color: var(--gold-light);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        /* MAP BOX */
+        .map-preview-box {
+            width: 100%;
+            height: 110px;
+            background: #1e293b;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-preview-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(212,175,55,0.15) 1px, transparent 1px);
+            background-size: 16px 16px;
+            opacity: 0.6;
+        }
+
+        .map-label {
+            position: relative;
+            z-index: 2;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--gold-light);
+            background: rgba(15, 23, 42, 0.8);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+        }
+
+        .map-btn {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            padding: 10px 22px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 20px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .map-btn:hover {
+            background: var(--gold);
+            color: var(--bg-blue);
+        }
+
+        .celebrate-btn {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            padding: 12px 28px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .celebrate-btn:hover {
+            background: var(--gold);
+            color: var(--bg-blue);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Image & Overlay -->
+    <div class="background-container"></div>
+    <div class="background-overlay"></div>
+
+    <!-- Falling Petals Container -->
+    <div id="petals-container"></div>
+
+    <div class="invitation-wrapper" id="scrollContainer">
+
+        <!-- SECTION 1: ENVELOPE -->
+        <div class="section" id="section-envelope">
+            <div class="invitation-top-label">Our Forever Begins Together</div>
+            
+            <div class="envelope-box" id="envelopeBox">
+                <div class="envelope-flap"></div>
+                <div class="wax-seal" onclick="openEnvelopeAndScroll()">S & D</div>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="tap-to-open-text">Tap to Open</div>
+                <div class="invited-label" style="margin-top: 6px;">You are cordially invited</div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: MAIN EVENT & SCRATCH CARD -->
+        <div class="section" id="section-main">
+            <div class="subtitle">We Are Getting Engaged</div>
+            <div class="names">Subulakshmi & Deepak</div>
+
+            <div class="content-card">
+                <div class="subtitle" style="margin-bottom: 5px;">Save The Date</div>
+                <div style="font-size: 12px; color: var(--silver); margin-bottom: 10px;">Scratch below to reveal our special day</div>
+                
+                <div class="scratch-box" id="scratchBoxContainer">
+                    <div class="scratch-reveal-text">
+                        <strong>17th September 2026</strong><br>
+                        <span style="font-size: 13px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px;">6:00 PM Onwards</span>
+                    </div>
+                    <canvas class="scratch-canvas" id="scratchCanvas"></canvas>
+                </div>
+            </div>
+
+            <div style="color: var(--silver); font-size: 12px; margin-top: 15px; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">↓ Scroll for Family & Venue</div>
+        </div>
+
+        <!-- SECTION 3: FAMILY DETAILS & VENUE -->
+        <div class="section" id="section-family">
+            <div class="ornament-divider">❖</div>
+            <div class="subtitle">Two Families, One Promise</div>
+            <h2>Introducing the Families</h2>
+
+            <div class="content-card" style="padding: 18px 15px;">
+                <div class="family-block">
+                    <div class="family-name-title">Subulakshmi M</div>
+                    <div>D/O Mr. Muthuganesan & Mrs. Bhagavathi Priya</div>
+                </div>
+
+                <div style="height: 1px; background: rgba(212,175,55,0.2); margin: 12px 0;"></div>
+
+                <div class="family-block">
+                    <div class="family-name-title">Deepak M</div>
+                    <div>S/O Mr. Murthy & Mrs. Kanjana</div>
+                </div>
+            </div>
+
+            <div class="content-card" style="padding: 18px 15px; margin-top: 5px;">
+                <div class="subtitle" style="margin-bottom: 4px;">Venue</div>
+                <div style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--gold-light);">Lara Courtyard</div>
+                <div style="font-size: 12px; color: var(--silver); margin-top: 2px;">Avadi</div>
+                
+                <div class="map-preview-box">
+                    <div class="map-preview-bg"></div>
+                    <div class="map-label">📍 Lara Courtyard, Avadi</div>
+                </div>
+
+                <a href="https://maps.google.com/?q=Lara+Courtyard+Avadi" target="_blank" class="map-btn">Get Directions</a>
+            </div>
+
+            <button class="celebrate-btn" onclick="triggerFinalCelebration()">Celebrate With Us ✨</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Generate Minimal Floating Petals
+        const petalsContainer = document.getElementById('petals-container');
+        const petalCount = 10;
+
+        for (let i = 0; i < petalCount; i++) {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            
+            const size = Math.random() * 8 + 8;
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size * 1.5}px`;
+            petal.style.left = `${Math.random() * 100}vw`;
+            
+            const duration = Math.random() * 8 + 6;
+            const delay = Math.random() * 5;
+            petal.style.animationDuration = `${duration}s`;
+            petal.style.animationDelay = `${delay}s`;
+            
+            petalsContainer.appendChild(petal);
+        }
+
+        // Open Envelope & Smooth Scroll to Section 2
+        function openEnvelopeAndScroll() {
+            const envelopeBox = document.getElementById('envelopeBox');
+            envelopeBox.classList.add('opened');
+
+            setTimeout(() => {
+                document.getElementById('section-main').scrollIntoView({ behavior: 'smooth' });
+                initScratchCard();
+            }, 500);
+        }
+
+        // Scratch Card Implementation
+        let scratchInitialized = false;
+        function initScratchCard() {
+            if (scratchInitialized) return;
+            scratchInitialized = true;
+
+            const canvas = document.getElementById('scratchCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#f3e5ab';
+            ctx.font = '13px Montserrat, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('✨ Scratch Here to Reveal ✨', canvas.width / 2, canvas.height / 2 + 5);
+
+            let scratched = false;
+
+            function revealAll(e) {
+                if (scratched) return;
+                scratched = true;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                confetti({
+                    particleCount: 100,
+                    spread: 80,
+                    origin: { y: 0.5 },
+                    colors: ['#d4af37', '#f3e5ab', '#cbd5e1', '#ffffff']
+                });
+            }
+
+            canvas.addEventListener('mousedown', revealAll);
+            canvas.addEventListener('touchstart', revealAll);
+        }
+
+        // Final Celebration Confetti Animation
+        function triggerFinalCelebration() {
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#d4af37', '#f3e5ab', '#cbd5e1', '#1e293b']
+            });
+        }
+    </script>
+</body>
+</html>
